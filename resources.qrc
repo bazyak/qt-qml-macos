@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>qml/Constants/Const.qml</file>
+        <file>qml/Constants/qmldir</file>
+        <file>qml/CustomRadioButton.qml</file>
+        <file>img/sunset.png</file>
+    </qresource>
+</RCC>
