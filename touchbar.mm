@@ -152,7 +152,7 @@ static NSTouchBarItemIdentifier const ScrollViewIdentifier = @"com.rb.tbex.Scrol
     if (inColorString != nil)
     {
          NSScanner* scanner = [NSScanner scannerWithString: inColorString];
-         [scanner scanHexInt: &colorCode]; // ignore error
+         (void)[scanner scanHexInt: &colorCode]; // ignore error
     }
     redByte = (unsigned char)(colorCode >> 16);
     greenByte = (unsigned char)(colorCode >> 8);

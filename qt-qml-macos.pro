@@ -1,4 +1,4 @@
-QT += quick widgets
+  QT += quick widgets
 
 # Input
 HEADERS += \
@@ -23,7 +23,7 @@ SOURCES += \
 LIBS += -framework AppKit
 
 macx: {
-    QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.15
+    QMAKE_MACOSX_DEPLOYMENT_TARGET = 12.3
 }
 
 CONFIG += c++17

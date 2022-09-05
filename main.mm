@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
     // --- qml frontend
     QQmlApplicationEngine engine;
     engine.addImportPath("qrc:/qml");
-    QUrl const url(u"qrc:/main.qml"_qs);
+    QUrl const url("qrc:/main.qml");
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject* obj, QUrl const& objUrl)
     {
