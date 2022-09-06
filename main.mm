@@ -17,7 +17,7 @@
 
 void customizeMainMenu()
 {
-    NSMenuItem* quitMenu = [[NSMenuItem alloc]
+    auto quitMenu = [[NSMenuItem alloc]
         initWithTitle: @"Quit"
         action: @selector(terminate:)
         keyEquivalent: @"q"];

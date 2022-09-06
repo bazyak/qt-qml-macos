@@ -3,24 +3,17 @@
 #include "qml_backend.h"
 
 @interface CustomView()
-
-@property NSInteger selection;
-@property NSInteger oldSelection;
-@property id trackingTouchIdentity;
-
+{
+    NSInteger selection;
+    NSInteger oldSelection;
+    id trackingTouchIdentity;
+}
 @end
 
 
 #pragma mark - CustomView
 
 @implementation CustomView
-
-- (void)dealloc
-{
-    [_trackingLocationString release];
-    _trackingLocationString = nil;
-    [super dealloc];
-}
 
 - (BOOL)acceptsFirstResponder
 {
@@ -32,7 +25,7 @@
     // You're already tracking a touch, so this must be a new touch.
     // What should you do? Cancel or ignore.
     //
-    if (_trackingTouchIdentity == nil)
+    if (trackingTouchIdentity == nil)
     {
         auto touches = [event touchesMatchingPhase: NSTouchPhaseBegan inView: self]; // NSSet<NSTouch*>*
         // Note: Touches may contain zero, one, or more touches.
@@ -44,13 +37,13 @@
         {
             if (touch.type == NSTouchTypeDirect)
             {
-                _trackingTouchIdentity = touch.identity;
+                trackingTouchIdentity = touch.identity;
 
                 // Remember the selection value at the start of tracking in case you need to cancel.
-                _oldSelection = _selection;
+                oldSelection = selection;
 
                 auto const location = [touch locationInView: self]; // NSPoint
-                _qmlBackend->feedback(QString("Began at: { x = %1 }").arg(location.x));
+                _qmlBackend && (_qmlBackend->feedback(QString("Began at: { x = %1 }").arg(location.x)), 1);
             }
         }
     }
@@ -60,14 +53,14 @@
 
 - (void)touchesMovedWithEvent: (NSEvent*)event
 {
-    if (_trackingTouchIdentity)
+    if (trackingTouchIdentity)
     {
         for (NSTouch* touch in [event touchesMatchingPhase: NSTouchPhaseMoved inView: self])
         {
-            if (touch.type == NSTouchTypeDirect && [_trackingTouchIdentity isEqual: touch.identity])
+            if (touch.type == NSTouchTypeDirect && [trackingTouchIdentity isEqual: touch.identity])
             {
                 auto const location = [touch locationInView: self];
-                _qmlBackend->feedback(QString("Moved at: { x = %1 }").arg(location.x));
+                _qmlBackend && (_qmlBackend->feedback(QString("Moved at: { x = %1 }").arg(location.x)), 1);
 
                 break;
             }
@@ -79,17 +72,17 @@
 
 - (void)touchesEndedWithEvent: (NSEvent*)event
 {
-    if (_trackingTouchIdentity)
+    if (trackingTouchIdentity)
     {
         for (NSTouch* touch in [event touchesMatchingPhase: NSTouchPhaseEnded inView: self])
         {
-            if (touch.type == NSTouchTypeDirect && [_trackingTouchIdentity isEqual: touch.identity])
+            if (touch.type == NSTouchTypeDirect && [trackingTouchIdentity isEqual: touch.identity])
             {
                 // Finshed tracking successfully.
-                _trackingTouchIdentity = nil;
+                trackingTouchIdentity = nil;
 
                 auto const location = [touch locationInView: self];
-                _qmlBackend->feedback(QString("Ended at: { x = %1 }").arg(location.x));
+                _qmlBackend && (_qmlBackend->feedback(QString("Ended at: { x = %1 }").arg(location.x)), 1);
 
                 break;
             }
@@ -101,11 +94,11 @@
 
 - (void)touchesCancelledWithEvent: (NSEvent*)event
 {
-    if (_trackingTouchIdentity)
+    if (trackingTouchIdentity)
     {
         for (NSTouch* touch in [event touchesMatchingPhase: NSTouchPhaseMoved inView: self])
         {
-            if (touch.type == NSTouchTypeDirect && [_trackingTouchIdentity isEqual: touch.identity])
+            if (touch.type == NSTouchTypeDirect && [trackingTouchIdentity isEqual: touch.identity])
             {
                 // CANCEL
                 // This can happen for a number of reasons.
@@ -114,12 +107,12 @@
                 // # The hardware canceled the touch.
                 // Whatever the reason, put things back the way they were. In this example, reset the selection.
                 //
-                _trackingTouchIdentity = nil;
+                trackingTouchIdentity = nil;
 
-                _selection = _oldSelection;
+                selection = oldSelection;
 
                 auto const location = [touch locationInView: self];
-                _qmlBackend->feedback(QString("Canceled at: { x = %1 }").arg(location.x));
+                _qmlBackend && (_qmlBackend->feedback(QString("Canceled at: { x = %1 }").arg(location.x)), 1);
             }
         }
     }

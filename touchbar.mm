@@ -47,7 +47,7 @@ static NSTouchBarItemIdentifier const ScrollViewIdentifier = @"com.rb.tbex.Scrol
     {
         NSView* customView = nil;
 
-        if (_qmlBackend->viewType())
+        if (_qmlBackend && _qmlBackend->viewType())
         {
             // Create the custom view that analyzes touch events.
             customView = [[CustomView alloc] initWithFrame: NSZeroRect];
@@ -57,8 +57,8 @@ static NSTouchBarItemIdentifier const ScrollViewIdentifier = @"com.rb.tbex.Scrol
 
             customView.allowedTouchTypes = NSTouchTypeMaskDirect;
 
-            // This is so you can report the view's touch location to the feedback label.
             reinterpret_cast<CustomView*>(customView).qmlBackend = _qmlBackend;
+            // This is so you can report the view's touch location to the feedback label.
             //[self.str unbind:NSValueBinding];
             //[self.str bind:NSValueBinding toObject:customView withKeyPath:@"trackingLocationString" options:nil];
         }
@@ -130,38 +130,38 @@ static NSTouchBarItemIdentifier const ScrollViewIdentifier = @"com.rb.tbex.Scrol
     }
 
     feedback += QString(" { x = %1 }").arg(location.x);
-    _qmlBackend->feedback(feedback);
+    _qmlBackend && (_qmlBackend->feedback(feedback), 1);
 }
 
 - (void)touchesButtonClicked
 {
-    _qmlBackend->viewType(true);
+    _qmlBackend && (_qmlBackend->viewType(true), 1);
 }
 
 - (void)gesturesButtonClicked
 {
-    _qmlBackend->viewType(false);
+    _qmlBackend && (_qmlBackend->viewType(false), 1);
 }
 
 - (NSColor*)colorWithHexColorString: (NSString*)inColorString
 {
-    NSColor* result = nil;
-    unsigned colorCode = 0;
+    NSColor* result { nil };
+    unsigned colorCode { 0 };
     unsigned char redByte, greenByte, blueByte;
 
-    if (inColorString != nil)
+    if (inColorString)
     {
-         NSScanner* scanner = [NSScanner scannerWithString: inColorString];
-         (void)[scanner scanHexInt: &colorCode]; // ignore error
+         auto scanner = [NSScanner scannerWithString: inColorString];
+         static_cast<void>([scanner scanHexInt: &colorCode]); // ignore error
     }
-    redByte = (unsigned char)(colorCode >> 16);
-    greenByte = (unsigned char)(colorCode >> 8);
-    blueByte = (unsigned char)(colorCode); // masks off high bits
+    redByte = static_cast<unsigned char>(colorCode >> 16);
+    greenByte = static_cast<unsigned char>(colorCode >> 8);
+    blueByte = static_cast<unsigned char>(colorCode); // masks off high bits
 
     result = [NSColor
-        colorWithCalibratedRed: (CGFloat)redByte / 0xff
-        green: (CGFloat)greenByte / 0xff
-        blue: (CGFloat)blueByte / 0xff
+        colorWithCalibratedRed: static_cast<CGFloat>(redByte) / 0xff
+        green: static_cast<CGFloat>(greenByte) / 0xff
+        blue: static_cast<CGFloat>(blueByte) / 0xff
         alpha: 1.0];
     return result;
 }

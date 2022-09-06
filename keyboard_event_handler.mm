@@ -1,16 +1,23 @@
 #import "keyboard_event_handler.h"
 
 @interface KeyboardEventHandler()
-
-@property NSTimer* timerUp;
-@property NSTimer* timerDown;
-
+{
+    NSTimer* timerUp;
+    NSTimer* timerDown;
+}
 @end
 
 
 #pragma mark - KeyboardEventHandler
 
 @implementation KeyboardEventHandler
+
+- (void)dealloc
+{
+    [_popup release];
+    _popup = nil;
+    [super dealloc];
+}
 
 - (BOOL)respondsToSelector: (SEL)selector
 {
@@ -19,16 +26,16 @@
 
 - (void)quit: (id)sender
 {
-    [_timerDown invalidate];
-    _timerDown = nil;
+    [timerDown invalidate];
+    timerDown = nil;
     [[NSApplication sharedApplication] terminate: nil];
 }
 
 - (void)cancelQuit: (id)sender
 {
     [_popup orderOut: NSApp];
-    [_timerUp invalidate];
-    _timerUp = nil;
+    [timerUp invalidate];
+    timerUp = nil;
 }
 
 - (void)setKeyDownEvent
@@ -39,14 +46,14 @@
         {
             if (!theEvent.isARepeat)
             {
-                if ([_timerUp isValid])
+                if ([timerUp isValid])
                 {
-                    [_timerUp invalidate];
-                    _timerUp = nil;
+                    [timerUp invalidate];
+                    timerUp = nil;
                 }
                 [_popup center];
                 [_popup makeKeyAndOrderFront: NSApp];
-                _timerDown = [NSTimer scheduledTimerWithTimeInterval: 2.0 target: self
+                timerDown = [NSTimer scheduledTimerWithTimeInterval: 2.0 target: self
                     selector: @selector(quit:) userInfo: nil repeats: NO];
             }
             return nil;
@@ -61,12 +68,12 @@
     {
         if (theEvent.keyCode == 12)
         {
-            if ([_timerDown isValid])
+            if ([timerDown isValid])
             {
-                [_timerDown invalidate];
-                _timerDown = nil;
+                [timerDown invalidate];
+                timerDown = nil;
             }
-            _timerUp = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self
+            timerUp = [NSTimer scheduledTimerWithTimeInterval: 1.0 target: self
                 selector: @selector(cancelQuit:) userInfo: nil repeats: NO];
             return nil;
         }
