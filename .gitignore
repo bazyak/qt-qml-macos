@@ -6,3 +6,4 @@ main
 *.o
 *.swp
 *.user
+.gitignore
